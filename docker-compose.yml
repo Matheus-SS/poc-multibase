@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+  conexaoDB:
+    container_name: 'conexaoDB'
+    restart: always
+    image: postgres:9.6.24-alpine3.15
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: conexaoDB
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./docker:/var/lib/postgresql/data
+  database:
+    container_name: 'database'
+    restart: always
+    image: postgres:9.6.24-alpine3.15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nest1
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./docker2:/var/lib/postgresql/data
+      
