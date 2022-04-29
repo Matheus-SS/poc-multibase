@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CatsModule } from './cat.module';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from './database.module';
+import { ApiModule } from './api/api.module';
+import { DatabaseModule } from './database/database.module';
+import { GraphQLModule } from './graphql/graphql.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, CatsModule],
+  imports: [ConfigModule.forRoot(), GraphQLModule, ApiModule],
 })
 export class AppModule {}

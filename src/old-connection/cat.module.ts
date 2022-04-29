@@ -4,9 +4,10 @@ import { CatController } from './cat.controller';
 import { Cats } from './cat.entity';
 import { CatsService } from './cat.service';
 import { ConnectionModule } from './connection.module';
+import { DatabaseModule } from './database.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Cats]), ConnectionModule],
+  imports: [DatabaseModule],
   controllers: [CatController],
   providers: [CatsService],
 })

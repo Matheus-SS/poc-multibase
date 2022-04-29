@@ -15,9 +15,10 @@ export const databaseProviders = [
         database: 'nest1',
       });
 
+      sequelize.addModels([Cats]);
       sequelize
         .authenticate()
-        .then((res) => Logger.log('Database connected successfully DATABASE'))
+        .then((res) => Logger.log('Database connected successfully NEST1'))
         .catch((err) => {
           Logger.error(`Error with database connection: ${err}`, 'Database');
           process.exit();

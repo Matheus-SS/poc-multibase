@@ -25,4 +25,16 @@ services:
       - '5433:5432'
     volumes:
       - ./docker2:/var/lib/postgresql/data
+  database2:
+    container_name: 'database2'
+    restart: always
+    image: postgres:9.6.24-alpine3.15
+    environment:
+      POSTGRES_USER: postgres2
+      POSTGRES_PASSWORD: postgres2
+      POSTGRES_DB: nest2
+    ports:
+      - '5434:5432'
+    volumes:
+      - ./docker3:/var/lib/postgresql/data
       
