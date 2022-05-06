@@ -11,7 +11,7 @@ import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 export class GetHeader {
-  header = {};
+  header = [];
   private static instace: GetHeader;
   constructor() {}
 
@@ -24,14 +24,11 @@ export class GetHeader {
   }
 
   public addHeader(header) {
-    this.header = {
-      ...this.header,
-      [header]: header,
-    };
+    this.header.unshift(header);
   }
 
   public getHeader() {
-    return this.header;
+    return this.header[0];
   }
 
   // public getHeader2() {

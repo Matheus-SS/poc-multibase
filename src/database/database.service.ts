@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { FindOptions, Model } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
+import { Inject, Injectable } from '@nestjs/common';
+import { FindOptions, Model, ModelCtor } from 'sequelize';
+import { ModelType, Sequelize } from 'sequelize-typescript';
 import { Dialect } from 'sequelize/types';
+import { GetHeader } from 'src/interceptor/getHeader.service';
 import { Cats } from 'src/persistence/cats/model/cats.model';
 import { Configuracao } from 'src/persistence/connection/model/connection.model';
 import { Config } from '../config/index';
@@ -13,13 +14,19 @@ interface Tenant {
   porta: string;
   base: string;
 }
+
+interface IConnection {
+  base: string;
+  model?: any;
+}
 @Injectable()
 export class DatabaseService {
-  private connections: any = {};
+  private connections: Record<string, Sequelize> = {};
   constructor() {
     this.connectDatabase();
   }
-  private connectDatabase(): Sequelize {
+
+  private connectDatabase(): void {
     const { database } = Config();
     const sequelize = new Sequelize({
       username: database.username,
@@ -38,10 +45,10 @@ export class DatabaseService {
       })
       .catch((err) => console.log('Erro na conexaoDB', err));
 
-    return sequelize;
+    return;
   }
 
-  public connectTenant(config: Tenant): void {
+  public async connectTenant(config: Tenant): Promise<void> {
     const sequelize = new Sequelize({
       username: config.name,
       database: config.base,
@@ -49,57 +56,24 @@ export class DatabaseService {
       dialect: 'postgres' as Dialect,
       host: config.host,
       password: config.senha,
-      models: [Cats],
     });
 
     this.connections = {
       ...this.connections,
       [config.base]: sequelize,
     };
-
     sequelize
       .authenticate()
       .then(() => {
         console.log(`CONECTADO NO BANCO ${config.base}`);
       })
       .catch((err) => console.log('Erro na conexaoDB', err));
-
     return;
   }
 
-  private async executeWithModel(
-    model: any,
-    base: string,
-    func: string,
-    ...args: any[]
-  ): Promise<any> {
-    let result = null;
-
+  public getConnection({ base, model }: IConnection) {
     this.connections[base].addModels([Cats]);
-
-    try {
-      const queryResult = await this.connections[base]
-        .model(model)
-        [func].call(this.connections[base].model(model), ...args);
-
-      if (Array.isArray(queryResult)) {
-        result = queryResult.map((qr) => qr.dataValues);
-      } else {
-        result = queryResult?.dataValues;
-      }
-    } catch (err) {
-      throw err;
-    }
-
-    return result;
-  }
-
-  public async findAll(
-    model: typeof Model,
-    base: string,
-    findOptions?: FindOptions,
-  ): Promise<any> {
-    return await this.executeWithModel(model, base, 'findAll', findOptions);
+    return this.connections[base].model(model);
   }
 
   // public connectDatabase2(): Sequelize {

@@ -32,9 +32,9 @@ export class CatsResolver {
   @Query((returns) => [CatsEntity])
   public async Hello2(@Args('base', { type: () => String }) base: string) {
     const t = await this.catsRepository.getAllCats(base);
-    console.log(t);
-    //const r = await this.connectionRepository.getConnectionByBase('nest1');
-
+    const r = await this.catsRepository.getAllCats('nest2');
+    console.log('ttttttttttt', t);
+    console.log('rrrrrrrrrrrrrrrr', r);
     return t;
   }
 }

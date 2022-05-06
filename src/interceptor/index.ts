@@ -9,8 +9,9 @@ import {
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { emitter } = require('../event');
 import { GetHeader } from './getHeader.service';
-
 @Injectable()
 export class DatabaseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -22,7 +23,8 @@ export class DatabaseInterceptor implements NestInterceptor {
       const single = GetHeader.getInstance();
 
       single.addHeader(response.headers.base);
-      // single.findHeader(response.headers.base);
+      single.addHeader(response.headers.base2);
+      console.log('INTERCEPTOR....', single.getHeader());
     }
 
     // When the request is HTTP

@@ -14,10 +14,16 @@ export class CatsRepository {
   ) {}
 
   public async getAllCats(base: string) {
-    const single = GetHeader.getInstance().getHeader();
-    console.log('REPOSITORY...', single);
-    // const result = this.cats.findAll();
-    const result = this.database.findAll(Cats, base);
+    const single = GetHeader.getInstance();
+
+    // const result = await this.database
+    //   .getConnectionModel({ base, model: Cats })
+    //   .findAll();
+
+    const result = await this.database
+      .getConnection({ base, model: Cats })
+      .findAll();
+    //const result = this.database.findAll(Cats, base);
 
     return result;
   }
